@@ -1,5 +1,5 @@
 ## .GPX trail path viewer 
-Animates recorded tracks, displays media files at specified distances, calculates instant and total values (terrain and effort related).
+Animates recorded tracks, displays media files at specified distances, calculates instant and total values (terrain and effort related).  
 https://dtabirca.github.io/trailvwr/  
 https://www.youtube.com/watch?v=i_mmZDv_CXo
 
