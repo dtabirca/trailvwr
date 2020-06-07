@@ -1,4 +1,4 @@
-var gpxFile = "Traseu curent_ 04 IUN 2020 15_17.gpx";
+var gpxFile = "./trails/gabony/Traseu curent_ 04 IUN 2020 15_17.gpx";
 var speed = 5;
 var showLity = true;
 
