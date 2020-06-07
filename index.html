@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>PathVwr</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+	<script src="https://unpkg.com/leaflet@1.3.2/dist/leaflet.js"></script>
+	<script src="https://unpkg.com/leaflet-ui@0.2.5/dist/leaflet-ui.js"></script>
+	<script src="https://unpkg.com/leaflet-providers@1.10.1/leaflet-providers.js"></script>
+
+	<link rel="stylesheet" href="https://unpkg.com/@raruto/leaflet-elevation@0.6.8/leaflet-elevation.css" />
+	<script src="https://unpkg.com/@raruto/leaflet-elevation@0.6.8/leaflet-elevation.js"></script>
+
+	<script src="https://unpkg.com/jquery@1.11.2/dist/jquery.js"></script>
+	<script src="https://unpkg.com/lity@2.4.1/dist/lity.js"></script>
+	<link href="https://unpkg.com/lity@2.4.1/dist/lity.css" rel="stylesheet">
+
+	<link href="trailvwr.css" rel="stylesheet">
+	<script src="trails/gabony/trail.config.js"></script>
+</head>
+
+<body>
+
+	<div id="map" class="leaflet-map"></div>
+	<div id="map2" class="mini-map"><div class="center">+</div></div>
+	<div id="map3" class="mini-map2"><div class="center white">+</div></div>
+	<div id="stats"><p>
+		Avg. speed: <b><span id="speed">0</span> km/h</b><br>
+		Avg. pace: <b><span id="pace">0</span> min/km</b><br>
+		Total distance: <b><span id="dist">0</span> km</b><br>
+		Total time: <b><span id="time">0</span></b><br>
+		Moving time: <b><span id="mov">0</span></b><br>
+		Total gain: <b><span id="asc">0</span> m</b><br>
+		Total loss: <b><span id="desc">0</span> m</b><br>
+		Max. elevation: <b><span id="max">0</span> m</b><br>
+		Min. elevation: <b><span id="min">0</span> m</b><br>
+		Slope: <b><span id="slo">0</span></b><br>
+		Calories: <b><span id="cal">0</span> kcal</b><br>
+	</p>
+	</div>
+	<!--div id="mini-photo"><div id="mini-caption">Next Photo</div></div-->
+
+	<div id="playme" style="">
+		<button onclick="
+			animated(runner, 0);
+			this.parentNode.style.display = 'none';
+			document.getElementById('stats').style.display = 'none';
+		">Play</button>
+	</div>
+	<script src="trailvwr.js"></script>
+</body>
+
+</html>

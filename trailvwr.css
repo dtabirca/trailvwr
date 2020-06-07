@@ -1,0 +1,227 @@
+html,
+body,
+.leaflet-map,
+.elevation-div {
+	height: 100%;
+	width: 100%;
+	padding: 0px;
+	margin: 0px;
+}
+.leaflet-map {
+	height: 100vh;
+	max-height: 100vw;
+	tr/ansform: perspective(50px) rotateX(0deg) rotateX(5deg) rotateZ(0deg);
+	p/erspective-origin: 500% 185%;
+	background-color: lightgray !important;
+	filter: Chroma(Color = #000000);
+	background-color: darkgreen !important;
+}
+.track{
+
+}
+.elevation-div {
+	top:-25%;
+	height: 25%;
+	width:90vw;
+	left:5vw;
+	font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+.lity{
+	background-color: transparent !important;
+}
+.lity-close{
+	display: none;
+}
+.lity-content img{
+	m/ax-height: 44vh;
+	m/ax-width: 44vw;
+	box-shadow: none;
+}
+.lity-caption{
+	font-family: Arial, Helvetica, sans-serif;
+	width: 100%;
+	text-align: center;
+	font-size: 18px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	m/argin-top: -35px;
+	color: white;
+	top:0px;
+	position: absolute;
+	background: rgba(0, 0, 0, 0.8);
+}
+.lity-wrap{
+	position:relative;	
+	margin: 15px auto auto auto;
+}
+.lity.lity-opened {
+	opacity: 0.9 !important;
+	tr/ansform: perspective(500px) rotateX(0deg) rotateX(2deg) rotateZ(0deg);
+}
+.lity-content{
+	border-radius: 1vh;
+    height: 90vh;
+    width: auto;
+    max-width: 90vw;
+    overflow: hidden;;
+	margin:none;
+	box-shadow: none;
+}
+.mini-map{
+	position:absolute;
+	top:15px;
+	left:5vw;
+	height:40vh;
+	width:40vh;
+	opacity:1;
+	tra/nsform: perspective(200px) rotateX(0deg) rotateX(5deg) rotateZ(0deg);
+	bor/der-radius: 5px;
+	border-radius: 20vh;
+
+}
+.mini-map2{
+	position:absolute;
+	top:15px;
+	right:5vw;
+	width:40vh;
+	height: 40vh;
+	color:white;
+	font-size: calc(.4em + 0.5vmax);
+	font-family: Arial, Helvetica, sans-serif;
+	text-align: left;
+	background: rgba(0, 0, 0, 0.6);
+	bor/der-radius: 5px;
+	border-radius: 20vh;	
+/*	position:absolute;
+	top:36vh;
+	left:5vw;
+	height:34vh;
+	width:34vh;
+	opacity:1;
+	tra/nsform: perspective(200px) rotateX(0deg) rotateX(5deg) rotateZ(0deg);
+	bo/rder-radius: 5px;
+	border-radius: 17vh;
+	di/splay: none;
+	background-color: #001900 !important;
+*/
+}
+.mini-map2 > div.leaflet-pane.leaflet-map-pane{
+    zoom: 150%;
+    margin-top: -25%;
+    margin-left: -25%;
+}
+#mini-photo{
+	position:absolute;
+	top:36vh;
+	right:5vw;
+	height:34vh;
+	width:34vh;
+	border-radius: 17vh;
+	opacity:1;
+	tra/nsform: perspective(200px) rotateX(0deg) rotateX(5deg) rotateZ(0deg);
+	text-align: center;
+	background: rgba(0, 0, 0, 0.6);
+	bo/rder-radius: 5px;
+	di/splay: none;
+	overflow: hidden;
+}
+#mini-photo img{
+  	min-width: 100%;
+  	max-height: 100%;
+}
+#mini-caption{
+	font-family: Arial, Helvetica, sans-serif;
+	width: 100%;
+	text-align: center;
+	font-size: 12px;
+	font-weight: bold;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin-top: -35px;
+	color: white;
+	position: absolute;
+	background: rgba(0, 0, 0, 0.6);
+}
+
+.leaflet-edit-osm{
+	display: none;
+}
+.center{
+	position:relative;
+	z-index: 99999;
+	mar/gin: auto;
+	bac/kground-color: red;
+	font-size: 16px;
+	margin-top: -8px;
+	margin-left: -8px;
+	top:20vh;
+	left:20vh;
+	color:#222;
+}
+.white{
+	color: #fff;
+}
+#playme{
+	position:absolute;z-index:99999999;top:0vh;left:50vw;
+}
+#playme button{
+	outline: none;
+	font-size: 30px;cursor: pointer;
+	background: rgba(0, 0, 0, 0.6);
+	color:white;
+	padding-top:70px;
+	border-radius: 100px;
+	font-size: 18px;
+	border: none;
+	width:200px;
+	height:200px;
+	margin-top: -100px;
+	margin-left: -100px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+#stats{
+	position:absolute;
+	top:50vh;
+	left:50vw;
+	margin-left:-20vh;
+	margin-top:-20vh;
+	width:40vh;
+	height:40vh;
+	color:white;
+	font-size: calc(.4em + 0.7vmax);
+	font-family: Arial, Helvetica, sans-serif;
+	text-align: left;
+	background: rgba(0, 0, 0, 0.6);
+	border-radius: 20vh;
+	displa/y: none;
+}
+#stats p{
+	margin-top: 5vh;
+	margin-left: 9vh;
+}
+.elevation-control.elevation .elevation-toggle {
+  border:10px solid red;
+}
+.elevation-control.elevation .axis text{
+	fill: white;
+}
+.elevation-summary{
+	display: none;
+}
+.elevation-detached .lightblue-theme.elevation-control.elevation .area{
+	stroke: black !important;
+	fill:#228b22 !important;
+	fill-opacity:0.7 !important;
+}
+.elevation-control.elevation .axis line, .elevation-control.elevation .axis path{
+	stroke: black !important;	
+}
+.x.axis, .y.axis{
+	font-size: 12px;
+}
+.elevation-control.elevation.lightblue-theme svg{
+	background-color: transparent;
+}
+.elevation.elevation-div.elevation-detached{
+	z-index: 9999;
+}
