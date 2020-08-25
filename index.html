@@ -18,7 +18,7 @@
 	<link href="https://unpkg.com/lity@2.4.1/dist/lity.css" rel="stylesheet">
 
 	<link href="trailvwr.css" rel="stylesheet">
-	<script src="trails/gabony/trail.config.js"></script>
+	<script src="trails/Gabony/trail.config.js"></script>
 </head>
 
 <body>
@@ -27,27 +27,30 @@
 	<div id="map2" class="mini-map"><div class="center">+</div></div>
 	<div id="map3" class="mini-map2"><div class="center white">+</div></div>
 	<div id="stats"><p>
-		Avg. speed: <b><span id="speed">0</span> km/h</b><br>
-		Avg. pace: <b><span id="pace">0</span> min/km</b><br>
-		Total distance: <b><span id="dist">0</span> km</b><br>
-		Total time: <b><span id="time">0</span></b><br>
-		Moving time: <b><span id="mov">0</span></b><br>
-		Total gain: <b><span id="asc">0</span> m</b><br>
-		Total loss: <b><span id="desc">0</span> m</b><br>
-		Max. elevation: <b><span id="max">0</span> m</b><br>
-		Min. elevation: <b><span id="min">0</span> m</b><br>
-		Slope: <b><span id="slo">0</span></b><br>
-		Calories: <b><span id="cal">0</span> kcal</b><br>
+		<span id="start">Start: <b><span id="start-data">45.2567873, 22.8685827</span></b><br></span>
+		<span id="end">End: <b><span id="end-data">45.2567873, 22.8685827</span></b><br></span>
+		<span id="dist">Total distance: <b><span id="dist-data">0</span> km</b><br></span>
+		<span id="time">Total time: <b><span id="time-data">0</span></b><br></span>
+		<span id="speed">Avg. speed: <b><span id="speed-data">0</span> km/h</b><br></span>
+		<!--Avg. pace: <b><span id="pace">0</span> min/km</b><br-->
+		<!--Moving time: <b><span id="mov">0</span></b><br-->
+		<span id="asc">Total gain: <b><span id="asc-data">0</span> m</b><br></span>
+		<span id="desc">Total loss: <b><span id="desc-data">0</span> m</b><br></span>
+		<!--span id="min">Min. elevation: <b><span id="min-data">0</span> m</b><br></span>
+		<span id="max">Max. elevation: <b><span id="max-data">0</span> m</b><br></span-->
+		<span id="remarks">Remarks: <span id="remarks-content">-</span></span>
+		<!--Slope: <b><span id="slo">0</span></b><br>
+		Calories: <b><span id="cal">0</span> kcal</b><br>-->
 	</p>
 	</div>
 	<!--div id="mini-photo"><div id="mini-caption">Next Photo</div></div-->
 
-	<div id="playme" style="">
+	<!--div id="playme" style="">
 		<button onclick="
 			animated(runner, 0);
 			this.parentNode.style.display = 'none';
 			document.getElementById('stats').style.display = 'none';
-		">Play</button>
+		">Play</button-->
 	</div>
 	<script src="trailvwr.js"></script>
 </body>

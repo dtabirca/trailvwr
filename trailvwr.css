@@ -34,7 +34,7 @@ body,
 }
 .lity-content img{
 	m/ax-height: 44vh;
-	m/ax-width: 44vw;
+	m/ax-width: 52vw;
 	box-shadow: none;
 }
 .lity-caption{
@@ -55,17 +55,24 @@ body,
 	margin: 15px auto auto auto;
 }
 .lity.lity-opened {
-	opacity: 0.9 !important;
+	opacity: 0.95 !important;
 	tr/ansform: perspective(500px) rotateX(0deg) rotateX(2deg) rotateZ(0deg);
 }
 .lity-content{
-	border-radius: 1vh;
     height: 90vh;
     width: auto;
     max-width: 90vw;
     overflow: hidden;;
 	margin:none;
 	box-shadow: none;
+    position: relative;
+    border-radius: 50% / 10%;
+}
+#map2, #map3{
+	visibility: hidden;
+}
+.elevation-div{
+	visibility: hidden;
 }
 .mini-map{
 	position:absolute;
@@ -163,6 +170,7 @@ body,
 }
 #playme{
 	position:absolute;z-index:99999999;top:0vh;left:50vw;
+	display:none;
 }
 #playme button{
 	outline: none;
@@ -179,25 +187,37 @@ body,
 	margin-left: -100px;
 	font-family: Arial, Helvetica, sans-serif;
 }
+#remarks{
+	width:80%;
+	display: block;
+}
+#remarks-content{
+	font-size:12px;
+	display: inline-block;
+	margin-left:-50px;
+}
 #stats{
 	position:absolute;
 	top:50vh;
 	left:50vw;
-	margin-left:-20vh;
-	margin-top:-20vh;
-	width:40vh;
-	height:40vh;
+	margin-left:-30vh;
+	margin-top:-30vh;
+	width:60vh;
+	height:60vh;
 	color:white;
 	font-size: calc(.4em + 0.7vmax);
 	font-family: Arial, Helvetica, sans-serif;
 	text-align: left;
 	background: rgba(0, 0, 0, 0.6);
-	border-radius: 20vh;
-	displa/y: none;
+	border-radius: 30vh;
+	visibility: hidden;
+}
+#speed,#end,#time,#asc,#desc{
+	d/isplay:none;
 }
 #stats p{
-	margin-top: 5vh;
-	margin-left: 9vh;
+	margin-top: 12vh;
+	margin-left: 19vh;
 }
 .elevation-control.elevation .elevation-toggle {
   border:10px solid red;

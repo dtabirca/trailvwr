@@ -5,7 +5,8 @@
 // map definitions
 var opts = {
 	map: {
-		zoom: 15,
+		zoom: 10,
+		center: L.latLng(45.6524567,25.5264231),
 		fullscreenControl: false,
 		resizerControl: false,
 		layersControl: false,
@@ -18,8 +19,8 @@ var opts = {
 		attributionControl: false
 	},
 	map2: {
-		zoom: 18,
-		center:[45.6340695,25.5884698],
+		zoom: 17,
+		//center:[45.6340695,25.5884698],
 		fullscreenControl: false,
 		resizerControl: false,
 		layersControl: false,
@@ -34,7 +35,7 @@ var opts = {
 	},
 	map3: {
 		zoom: 17,
-		center:[45.6340695,25.5884698],
+		//center:[45.6340695,25.5884698],
 		fullscreenControl: false,
 		resizerControl: false,
 		layersControl: false,
@@ -55,7 +56,8 @@ var opts = {
 			detached: true,
 			summary: "linear",
 			followMarker: true,
-			//zoom: 1,
+			//zoom: 7,
+			//center: L.latLng(45.6524567,25.5264231),
 			download:false,
 			gpxOptions: {
 				async: true,
@@ -92,8 +94,8 @@ var opts = {
 
 // leaflet-elevation overwrite
 L.Control.Elevation.prototype.initialize = function(options) {
+	
 	this.options.autohide = typeof options.autohide !== "undefined" ? options.autohide : !L.Browser.mobile;
-
 	// Aliases.
 	if (typeof options.detachedView !== "undefined") this.options.detached = options.detachedView;
 	if (typeof options.responsiveView !== "undefined") this.options.responsive = options.responsiveView;
@@ -158,12 +160,130 @@ L.Control.Elevation.prototype._appendMouseFocusG = function(g) {
 		.attr("class", "mouse-focus-label-t")		
 };
 var startt;
+var startc;
+var endc;
+var totalgain=0;
+var totalloss=0;
+
+L.Control.Elevation.prototype.loadGPX = function(data) {
+	var callback = function(data) {
+		this.options.gpxOptions.polyline_options.className += 'elevation-polyline ' + this.options.theme;
+
+		this.layer = this.gpx = new L.GPX(data, this.options.gpxOptions);
+
+		this.layer.on('loaded', function(e) {
+			if (this._map) this._map.fitBounds(e.target.getBounds());
+		}, this);
+		this.layer.on('addpoint', function(e) {
+			if (e.point._popup) {
+				e.point._popup.options.className = 'elevation-popup';
+				e.point._popup._content = decodeURI(e.point._popup._content);
+			}
+			if (e.point._popup && e.point._popup._content) {
+				e.point.bindTooltip(e.point._popup._content, { direction: 'top', sticky: true, opacity: 1, className: 'elevation-tooltip' }).openTooltip();
+			}
+		});
+		this.layer.once("addline", function(e) {
+			this.addData(e.line /*, this.layer*/ );
+
+			this.track_info = this.track_info || {};
+			this.track_info.type = "gpx";
+			this.track_info.name = this.layer.get_name();
+			this.track_info.distance = this._distance;
+			this.track_info.elevation_max = this._maxElevation;
+			this.track_info.elevation_min = this._minElevation;
+
+			var evt = {
+				data: data,
+				layer: this.layer,
+				name: this.track_info.name,
+				track_info: this.track_info,
+			};
+
+			if (this.fire) this.fire("eledata_loaded", evt, true);
+			if (this._map) this._map.fire("eledata_loaded", evt, true);
+		}, this);
+
+		if (this._map) {
+			this.layer.addTo(this._map);
+		} else {
+			console.warn("Undefined elevation map object");
+		}
+
+	}.bind(this, data);
+	
+	if (typeof L.GPX !== 'function' && this.options.lazyLoadJS) {
+		L.Control.Elevation._gpxLazyLoader = this._lazyLoadJS('https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.4.0/gpx.js', L.Control.Elevation._gpxLazyLoader);
+		L.Control.Elevation._gpxLazyLoader.then(function(){
+			
+			L.GPX.prototype._parse = function(input, options, async) {
+    			var _this = this;
+    			var cb = function(gpx, options) {
+      				var layers = _this._parse_gpx_data(gpx, options);
+      				if (!layers) return;
+					//console.log(layers._latlngs);    
+					var first_coords = layers._latlngs[0];
+					var last_coords = layers._latlngs[layers._latlngs.length-1];
+					setTimeout(async function(){
+						map.flyTo(L.latLng(first_coords.lat.toFixed( 6 ), first_coords.lng.toFixed( 6 )), 14);
+					}, 1000);
+					setTimeout(async function(){
+						L.tileLayer.provider('Esri.WorldImagery').addTo(map);
+						_this.addLayer(layers);
+     					_this.fire('loaded', { layers: layers, element: gpx });
+     					var startmarker = L.marker([first_coords.lat.toFixed( 6 ), first_coords.lng.toFixed( 6 )]).addTo(map);
+						//startmarker.bindPopup("<span style=\"color:red\">START</span>").openPopup();
+     					var endmarker = L.marker([last_coords.lat.toFixed( 6 ), last_coords.lng.toFixed( 6 )]).addTo(map);
+						//endmarker.bindPopup("FINISH").openPopup();						
+					}, 5000);
+
+    			}
+    			if (input.substr(0,1)==='<') { // direct XML has to start with a <
+      				var parser = new DOMParser();
+      				if (async) {
+				        setTimeout(function() {
+				          cb(parser.parseFromString(input, "text/xml"), options);
+				        });
+					} else {
+						cb(parser.parseFromString(input, "text/xml"), options);
+					}
+			    } else {
+			      this._load_xml(input, cb, options, async);
+			    }
+  			};
+			callback.call();
+		});
+	} else {
+		callback.call();
+	}
+};
 L.Control.Elevation.prototype._addGPXdata = function(coords) {
 	if (coords) {
 		startt = coords[0].meta.time;
+		startc = coords[0].lat.toFixed( 6 ) + ", " + coords[0].lng.toFixed( 6 );
+
+		//qq=false;
 		for (var i = 0; i < coords.length; i++) {
+			//console.log(coords[i]);
+			if (coords[i-elevAccuracy] != undefined){
+				if (i%elevAccuracy==0){
+					df = (coords[i].meta.ele > coords[i-elevAccuracy].meta.ele &&
+				 	coords[i].lat != coords[i-elevAccuracy].lat &&
+				 	coords[i].lng != coords[i-elevAccuracy].lng) ?
+			  		(coords[i].meta.ele - coords[i-elevAccuracy].meta.ele) : 0;
+					totalgain += df;
+				}				
+				if (i%elevAccuracy==0){
+					df = (coords[i].meta.ele < coords[i-elevAccuracy].meta.ele &&
+				 	coords[i].lat != coords[i-elevAccuracy].lat &&
+				 	coords[i].lng != coords[i-elevAccuracy].lng) ?
+				  		(coords[i-elevAccuracy].meta.ele - coords[i].meta.ele) : 0;
+			  		totalloss += df;
+			  	}
+			}
 			this._addPoint(coords[i].lat, coords[i].lng, coords[i].meta.ele, coords[i].meta.time);
 		}
+		endc = coords[coords.length-1].lat.toFixed( 6 ) + ", " + coords[coords.length-1].lng.toFixed( 6 );
 	}
 };
 L.Control.Elevation.prototype._addPoint = function(x, y, z, t) {
@@ -319,6 +439,7 @@ L.Control.Elevation.prototype._showDiagramIndicator = function(item, xCoordinate
 	}
 };
 // elevation panel functions
+var firstitem = false;
 L.Control.Elevation.include({
 	// Update map and chart "markers" from latlng
 	setPositionFromLatLng: function(latlng) {
@@ -333,7 +454,13 @@ L.Control.Elevation.include({
 			this._hidePositionMarker();
 			this._showDiagramIndicator(item, xCoord);
 			this._showPositionMarker(item);
-			map.setZoom(16);
+			if (!firstitem){
+				//map.flyTo(L.latLng(item.x.toFixed( 6 ), item.y.toFixed( 6 )), 15);
+				setTimeout(function(){
+					map.setZoom(16);
+				}, 500);
+				firstitem = true;
+			}
 		}
 	},
 
@@ -381,11 +508,20 @@ L.Control.Elevation.include({
 		let x = this._x(pos);
 		let iter = this._findItemForX(x);
 		let curr = this._data[iter];
+		// 
 		if (curr != undefined){
+			
+			var ip = ((curr.td/1000/60)/curr.d).toFixed( 2 );
+			//console.log(ip);
 			runner
 				.select("image")
 				.attr("x", x-50)
 				.attr("y", this._y(curr.z)-50);
+			if (ip > 10){
+				runner.select("image").attr("xlink:href", 'hike.png');
+			} else{
+				runner.select("image").attr("xlink:href", 'run.png')
+			}
 			this.setPositionFromLatLng(curr.latlng);
 			map.panTo(curr.latlng);
 			map2.panTo(curr.latlng);
@@ -399,33 +535,37 @@ var map = new L.Map('map', opts.map);
 L.control.attribution({position: 'bottomleft'}).addTo(map);
 //L.esri.basemapLayer("ImageryFirefly").addTo(map);
 //L.tileLayer.provider('HikeBike').addTo(map);
-L.tileLayer.provider('Esri.WorldImagery').addTo(map);
+//L.tileLayer.provider('Esri.WorldImagery').addTo(map);
 var map2 = new L.Map('map2', opts.map2);
-L.tileLayer.provider('HikeBike').addTo(map2);
 var map3 = new L.Map('map3', opts.map3);
-//L.tileLayer.provider('OpenTopoMap').addTo(map3);
+
+L.tileLayer.provider('HikeBike').addTo(map2);
+//L.tileLayer.provider('OpenTopoMap').addTo(map2);
 L.tileLayer.provider('Esri.WorldImagery').addTo(map3);
+//L.tileLayer.provider('Esri.WorldImagery').addTo(map3);
 
 var controlElevation = L.control.elevation(opts.elevationControl.options);
 controlElevation.addTo(map);
 controlElevation.load(opts.elevationControl.url);
 
-var displayed = 0;
+var displayed = -1;
 async function animated(runner, i) {
 	var photo;
 	if (i < controlElevation._distance) {
 		for (var j=0; j<media.length;j++){
-			if (i.toFixed( 2 ) == media[j].dist.toFixed( 2 ) && displayed != j){
+			
+			if (parseFloat(i.toFixed( 2 )) >= parseFloat(media[j].dist.toFixed( 2 )) && displayed < j){
 				displayed = j;
-				//document.getElementById('mini-photo').innerHTML = '<img src="img/'+media[j].file+'"><div id="mini-caption">'+media[j].text+'</div>';
 				if (showLity){
-					photo = lity('<img src="trails/'+media[j].file+'"><div class="lity-caption">'+media[j].text+'</div>', {'esc':false});
+					document.getElementsByClassName('elevation-div')[0].style.opacity = '0.5';
+					photo = lity('<img src="trails/'+media[j].file+'">'+
+						((media[j].text != '')?'<div class="lity-caption">'+media[j].text+'</div>':''), {'esc':false});
 					await new Promise(r => setTimeout(r, media[j].time));
+					document.getElementsByClassName('elevation-div')[0].style.opacity = '1';
 					photo.close();
 				}		
 			}
 		}
-
 		i = i + (0.001 * speed);
 		setTimeout(function() {
 			controlElevation.updateRunnerPos(runner, i);
@@ -436,12 +576,32 @@ async function animated(runner, i) {
 	let iter = controlElevation._findItemForX(x);
 	//console.log(iter+'|'+controlElevation._data.length);
 	if(iter == controlElevation._data.length){
-		document.getElementById('playme').style.display = 'block';	
-		document.getElementById('stats').style.display = 'block';	
+		//document.getElementById('playme').style.display = 'block';	
+		document.getElementById('stats').style.visibility = 'visible';
+		setTimeout(function(){
+			map.setZoom(13);
+		}, 500);
+		document.getElementById('remarks-content').innerHTML = remarks;
 	}	
 }
 let runner;
 map.on('eledata_loaded', function(e) {
+	setTimeout(function(){
+		setTimeout(function(){
+			document.getElementById('map2').style.visibility = 'visible';
+		}, 10);
+		setTimeout(function(){
+			document.getElementById('map3').style.visibility = 'visible';
+		}, 40);
+		setTimeout(function(){
+			document.getElementsByClassName('elevation-div')[0].style.visibility = 'visible';
+		}, 80);
+		setTimeout(function(){
+			animated(runner, 0);
+		}, 1000);
+		//document.getElementById('stats').style.display = 'block';
+		//document.getElementById('playme').style.display = 'block';
+	}, 7500);
 
 	for (var j=0; j<media.length;j++){
 		controlElevation.addCheckpoint({
@@ -449,21 +609,25 @@ map.on('eledata_loaded', function(e) {
 		});
 	}
 	
-	document.getElementById('dist').innerHTML = e.track_info.distance.toFixed( 2 );
-	document.getElementById('max').innerHTML = e.track_info.elevation_max.toFixed( 2 );
-	document.getElementById('min').innerHTML = e.track_info.elevation_min.toFixed( 2 );
-	document.getElementById('time').innerHTML = secondsToHms(e.layer._info.duration.total/1000);
-	document.getElementById('mov').innerHTML = secondsToHms(e.layer._info.duration.moving/1000);
+	document.getElementById('start-data').innerHTML = startc;
+	document.getElementById('end-data').innerHTML = endc;	
+	document.getElementById('dist-data').innerHTML = e.track_info.distance.toFixed( 2 );
+	//document.getElementById('max-data').innerHTML = e.track_info.elevation_max.toFixed( 2 );
+	//document.getElementById('min-data').innerHTML = e.track_info.elevation_min.toFixed( 2 );
+	document.getElementById('time-data').innerHTML = secondsToHms(e.layer._info.duration.total/1000);
+	//document.getElementById('mov').innerHTML = secondsToHms(e.layer._info.duration.moving/1000);
 	var is = (e.track_info.distance/(e.layer._info.duration.total/1000/60/60)).toFixed( 2 );
-	var ip = ((e.layer._info.duration.total/1000/60)/e.track_info.distance).toFixed( 2 );
-	document.getElementById('speed').innerHTML = is;
-	document.getElementById('pace').innerHTML = ip;
-	document.getElementById('asc').innerHTML = e.layer._info.elevation.gain.toFixed( 2 );
-	document.getElementById('desc').innerHTML = e.layer._info.elevation.loss.toFixed( 2 );
-	var slope = (e.layer._info.elevation.gain/e.track_info.distance/1000*100).toFixed( 2 );
-	document.getElementById('slo').innerHTML = slope + ' % '
-	 + '( ' + (Math.atan(slope/100) * 180 / Math.PI).toFixed( 2 ) + '&#176;)';
-	document.getElementById('cal').innerHTML = (e.layer._info.duration.moving/1000/60/60*500).toFixed( 2 );
+	//var ip = ((e.layer._info.duration.total/1000/60)/e.track_info.distance).toFixed( 2 );
+	document.getElementById('speed-data').innerHTML = is;
+	//document.getElementById('pace').innerHTML = ip;
+	document.getElementById('asc-data').innerHTML = totalgain.toFixed( 2 );
+	//e.layer._info.elevation.gain.toFixed( 2 );
+	document.getElementById('desc-data').innerHTML = totalloss.toFixed( 2 );
+	//e.layer._info.elevation.loss.toFixed( 2 );
+	//var slope = (e.layer._info.elevation.gain/e.track_info.distance/1000*100).toFixed( 2 );
+	//document.getElementById('slo').innerHTML = slope + ' % '
+	// + '( ' + (Math.atan(slope/100) * 180 / Math.PI).toFixed( 2 ) + '&#176;)';
+	//document.getElementById('cal').innerHTML = (e.layer._info.duration.moving/1000/60/60*500).toFixed( 2 );
 
 	runner = controlElevation.addRunner({
 		dist: 0

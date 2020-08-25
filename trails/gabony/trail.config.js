@@ -1,6 +1,12 @@
 var gpxFile = "./trails/gabony/Traseu curent_ 04 IUN 2020 15_17.gpx";
 var speed = 5;
 var showLity = true;
+var remarks = 
+"<ul>" +
+"<li>Add some notes here</li>" +
+"</ul>";
+var showFor = 3000;//ms
+var elevAccuracy = 7;
 
 var media = [
 {'dist': 0.05,'file': 'gabony/P1130590.JPG','time':4000,'text':'stone bench'},
